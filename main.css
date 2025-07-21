@@ -26,3 +26,15 @@ body {
     max-width: 600px;
     margin: 20px 0;
 }
+
+@media (max-width: 600px) {
+    .text-overlay {
+        font-size: 2em;
+    }
+    
+    .img-size {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+    }
+}
