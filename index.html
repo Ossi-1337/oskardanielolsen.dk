@@ -3,9 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
     <title>. . .</title>
 </head>
 <body>
     <h1>Yo</h1>
+    <script>
+
+        let rotate_amount = 360 / 1000;
+        let current_angle = 0;
+        
+        setInterval(() => {
+            current_angle += rotate_amount;
+            if (current_angle >= 360) {
+                current_angle = 0;
+            }
+            document.body.style.transform = `rotate(${current_angle}deg)`;
+        }, 1);
+    </script>
 </body>
 </html>
