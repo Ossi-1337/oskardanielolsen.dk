@@ -1,3 +1,9 @@
 h1 {
     text-align: center;
 }
+
+.rotating-text {
+    display: block;             
+    width: fit-content;         
+    margin: 0 auto;             
+}
