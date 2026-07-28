@@ -1,7 +1,3 @@
-const GITHUB_USER = 'Ossi-1337';
-const REPOSITORY_LIMIT = 4;
-const excludedRepositories = new Set([GITHUB_USER.toLowerCase(), 'website']);
-
 const projectGrid = document.querySelector('#project-grid');
 const projectStatus = document.querySelector('#project-status');
 const year = document.querySelector('#year');
@@ -61,9 +57,9 @@ async function loadProjects() {
 
     try {
         const response = await fetch(
-            `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated`,
+            '/api/projects',
             {
-                headers: { Accept: 'application/vnd.github+json' },
+                headers: { Accept: 'application/json' },
                 signal: controller.signal,
             }
         );
@@ -72,15 +68,9 @@ async function loadProjects() {
             throw new Error(`GitHub request failed with ${response.status}`);
         }
 
-        const repositories = (await response.json())
-            .filter((repository) =>
-                !repository.fork &&
-                !repository.archived &&
-                !excludedRepositories.has(repository.name.toLowerCase())
-            )
-            .slice(0, REPOSITORY_LIMIT);
+        const repositories = await response.json();
 
-        if (repositories.length === 0) {
+        if (!Array.isArray(repositories) || repositories.length === 0) {
             return;
         }
 
