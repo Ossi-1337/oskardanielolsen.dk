@@ -1,13 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Oskar is a software developer from Denmark working with AI, Python, and C#.">
+    <meta name="color-scheme" content="dark">
     <link rel="stylesheet" href="index.css">
     <script src="index.js" defer></script>
-    <title>Night Sky</title>
+    <title>Oskar — Software Developer</title>
 </head>
 <body>
-    <canvas id="sky" aria-label="Animated night sky"></canvas>
+    <header class="site-header">
+        <a class="wordmark" href="/" aria-label="Oskar, home">Oskar</a>
+        <p>Software developer · Denmark</p>
+    </header>
+
+    <main>
+        <section class="intro" aria-labelledby="intro-title">
+            <p class="eyebrow"><span aria-hidden="true"></span> Hello, I'm Oskar</p>
+            <h1 id="intro-title">Software developer.</h1>
+            <p class="lede">Interested in AI and LLMs. Primarily working with Python and C#.</p>
+
+            <nav class="contact-links" aria-label="Contact and profiles">
+                <a href="https://github.com/Ossi-1337" rel="me">GitHub <span aria-hidden="true">↗</span></a>
+                <a href="https://www.linkedin.com/in/oskar-daniel-olsen/" rel="me">LinkedIn <span aria-hidden="true">↗</span></a>
+            </nav>
+        </section>
+
+        <section class="projects" aria-labelledby="projects-title">
+            <div class="section-heading">
+                <div>
+                    <p class="section-number">01</p>
+                    <h2 id="projects-title">Projects</h2>
+                </div>
+                <a class="quiet-link" href="https://github.com/Ossi-1337?tab=repositories">All repositories <span aria-hidden="true">↗</span></a>
+            </div>
+
+            <div class="project-grid" id="project-grid">
+                <article class="project-card">
+                    <div class="project-topline">
+                        <h3><a href="https://github.com/Ossi-1337/actio">Actio</a></h3>
+                        <span>C#</span>
+                    </div>
+                    <p>Local-first workflow runner inspired by GitHub Actions.</p>
+                    <a class="card-link" href="https://github.com/Ossi-1337/actio" aria-label="View Actio on GitHub">View project <span aria-hidden="true">↗</span></a>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-topline">
+                        <h3><a href="https://github.com/Ossi-1337/financial-research-agent">Financial Research Agent</a></h3>
+                        <span>Python</span>
+                    </div>
+                    <p>Local-first AI agent system for company and stock research.</p>
+                    <a class="card-link" href="https://github.com/Ossi-1337/financial-research-agent" aria-label="View Financial Research Agent on GitHub">View project <span aria-hidden="true">↗</span></a>
+                </article>
+            </div>
+            <p class="project-status" id="project-status" aria-live="polite"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© <span id="year">2026</span> Oskar</p>
+        <a href="#" aria-label="Back to top">Back to top ↑</a>
+    </footer>
 </body>
 </html>
