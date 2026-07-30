@@ -72,7 +72,6 @@ main {
 
 .intro {
     display: flex;
-    max-width: 59rem;
     flex-direction: column;
     justify-content: center;
     padding-block: clamp(4.5rem, 8vw, 6.5rem) clamp(4rem, 7vw, 5.5rem);
@@ -105,12 +104,12 @@ p {
 }
 
 h1 {
-    max-width: 56rem;
     margin-bottom: 2rem;
-    font-size: clamp(4rem, 10.5vw, 8.75rem);
+    font-size: clamp(2rem, 8.5vw, 7rem);
     font-weight: 520;
     letter-spacing: -0.075em;
     line-height: 0.88;
+    white-space: nowrap;
 }
 
 .lede {
@@ -296,11 +295,6 @@ footer a:hover {
 
     .intro {
         padding-block: 5rem 4rem;
-    }
-
-    h1 {
-        font-size: clamp(3.6rem, 18vw, 5.5rem);
-        line-height: 0.93;
     }
 
     .section-heading {
