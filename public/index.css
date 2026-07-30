@@ -74,7 +74,7 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-block: clamp(4.5rem, 8vw, 6.5rem) clamp(4rem, 7vw, 5.5rem);
+    padding-block: clamp(3rem, 5vw, 4rem) clamp(2.5rem, 4vw, 3.5rem);
 }
 
 .eyebrow {
@@ -142,6 +142,29 @@ h1 {
     color: var(--background);
     border-color: var(--text);
     background: var(--text);
+}
+
+.contact-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contact-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    flex: none;
+    background: currentColor;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+    mask: var(--icon) center / contain no-repeat;
+}
+
+.contact-icon--github {
+    --icon: url("icons/github.svg");
+}
+
+.contact-icon--linkedin {
+    --icon: url("icons/linkedin.svg");
 }
 
 .projects {
@@ -294,7 +317,7 @@ footer a:hover {
     }
 
     .intro {
-        padding-block: 5rem 4rem;
+        padding-block: 3.25rem 2.5rem;
     }
 
     .section-heading {
