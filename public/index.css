@@ -124,7 +124,7 @@ p {
 
 h1 {
     margin-bottom: 2rem;
-    font-size: clamp(2rem, 8.5vw, 7rem);
+    font-size: clamp(1.75rem, 8.5vw, 7rem);
     font-weight: 520;
     letter-spacing: -0.075em;
     line-height: 0.88;
@@ -219,7 +219,8 @@ h2 {
 }
 
 .quiet-link:hover,
-.card-link:hover {
+.project-card:hover .card-link,
+.project-card:focus-within .card-link {
     color: var(--text);
 }
 
@@ -250,14 +251,21 @@ h2 {
     bottom: 1.25rem;
     color: var(--project-index);
     content: "0" counter(projects);
+    pointer-events: none;
     font: 500 2.75rem/1 ui-monospace, "Cascadia Code", monospace;
     letter-spacing: -0.08em;
 }
 
-.project-card:hover {
+.project-card:hover,
+.project-card:focus-within {
     border-color: var(--border-strong);
     background: var(--surface-hover);
     transform: translateY(-2px);
+}
+
+.project-card:focus-within {
+    outline: 2px solid var(--text);
+    outline-offset: 4px;
 }
 
 .project-topline {
@@ -275,10 +283,21 @@ h3 {
     letter-spacing: -0.035em;
 }
 
-h3 a:hover {
+h3 a:hover,
+h3 a:focus-visible {
     text-decoration: underline;
     text-decoration-color: var(--border-strong);
     text-underline-offset: 0.25rem;
+}
+
+.project-card h3 a::after {
+    position: absolute;
+    content: "";
+    inset: 0;
+}
+
+.project-card h3 a:focus-visible {
+    outline: none;
 }
 
 .project-topline span {
@@ -298,11 +317,16 @@ h3 a:hover {
     margin-top: auto;
 }
 
-.project-status {
-    min-height: 1.25rem;
-    margin: 1rem 0 0;
-    color: var(--muted);
-    font-size: 0.7rem;
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 footer {
@@ -351,6 +375,13 @@ footer a:hover {
 
     .project-card {
         min-height: 15rem;
+    }
+}
+
+@media (max-width: 18rem) {
+    h1 {
+        line-height: 0.93;
+        white-space: normal;
     }
 }
 

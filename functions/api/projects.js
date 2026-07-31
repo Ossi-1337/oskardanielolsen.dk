@@ -47,6 +47,7 @@ export async function onRequestGet({ env }) {
                 query: PINNED_REPOSITORIES_QUERY,
                 variables: { login: GITHUB_LOGIN },
             }),
+            signal: AbortSignal.timeout(5000),
         });
     } catch {
         return jsonResponse({ error: 'GitHub is temporarily unavailable.' }, 502);

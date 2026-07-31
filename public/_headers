@@ -1,0 +1,3 @@
+/*
+  Content-Security-Policy: default-src 'self'; base-uri 'none'; connect-src 'self'; form-action 'none'; frame-ancestors 'none'; img-src 'self'; object-src 'none'; script-src 'self'; style-src 'self'
+  Permissions-Policy: camera=(), geolocation=(), microphone=()

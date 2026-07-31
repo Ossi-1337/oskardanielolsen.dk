@@ -36,16 +36,10 @@ function createProjectCard(repository) {
     const description = document.createElement('p');
     description.textContent = repository.description || 'Open-source project on GitHub.';
 
-    const projectLink = document.createElement('a');
+    const projectLink = document.createElement('span');
     projectLink.className = 'card-link';
-    projectLink.href = repository.html_url;
-    projectLink.setAttribute('aria-label', `View ${displayName} on GitHub`);
-    projectLink.append('View project ');
-
-    const arrow = document.createElement('span');
-    arrow.setAttribute('aria-hidden', 'true');
-    arrow.textContent = '↗';
-    projectLink.append(arrow);
+    projectLink.setAttribute('aria-hidden', 'true');
+    projectLink.textContent = 'View project ↗';
 
     article.append(topline, description, projectLink);
     return article;
