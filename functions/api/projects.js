@@ -28,9 +28,15 @@ function jsonResponse(body, status, cacheControl = 'no-store') {
     });
 }
 
-export async function onRequestGet({ env }) {
+export async function onRequestGet({ env, request, waitUntil }) {
     if (!env.GITHUB_TOKEN) {
         return jsonResponse({ error: 'GitHub integration is not configured.' }, 503);
+    }
+
+    const cache = caches.default;
+    const cachedResponse = await cache.match(request);
+    if (cachedResponse) {
+        return cachedResponse;
     }
 
     let response;
@@ -78,9 +84,12 @@ export async function onRequestGet({ env }) {
             language: repository.primaryLanguage?.name ?? null,
         }));
 
-    return jsonResponse(
+    const projectsResponse = jsonResponse(
         repositories,
         200,
         'public, max-age=300, s-maxage=900'
     );
+
+    waitUntil(cache.put(request, projectsResponse.clone()));
+    return projectsResponse;
 }
