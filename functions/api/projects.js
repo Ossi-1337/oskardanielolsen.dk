@@ -33,8 +33,11 @@ export async function onRequestGet({ env, request, waitUntil }) {
         return jsonResponse({ error: 'GitHub integration is not configured.' }, 503);
     }
 
+    const cacheUrl = new URL(request.url);
+    cacheUrl.search = '';
+    const cacheKey = new Request(cacheUrl.toString(), { method: 'GET' });
     const cache = caches.default;
-    const cachedResponse = await cache.match(request);
+    const cachedResponse = await cache.match(cacheKey);
     if (cachedResponse) {
         return cachedResponse;
     }
@@ -90,6 +93,6 @@ export async function onRequestGet({ env, request, waitUntil }) {
         'public, max-age=300, s-maxage=900'
     );
 
-    waitUntil(cache.put(request, projectsResponse.clone()));
+    waitUntil(cache.put(cacheKey, projectsResponse.clone()));
     return projectsResponse;
 }
