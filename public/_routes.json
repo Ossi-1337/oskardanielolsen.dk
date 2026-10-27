@@ -1,5 +1,13 @@
 {
     "version": 1,
-    "include": ["/api/*"],
-    "exclude": []
+    "include": ["/*"],
+    "exclude": [
+        "/index.css",
+        "/index.js",
+        "/icons/github.svg",
+        "/icons/linkedin.svg",
+        "/favicon.svg",
+        "/og.png",
+        "/robots.txt"
+    ]
 }

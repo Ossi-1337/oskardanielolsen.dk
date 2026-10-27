@@ -68,7 +68,19 @@ async function loadProjects() {
             return;
         }
 
-        projectGrid.replaceChildren(...repositories.map(createProjectCard));
+        const cards = [...projectGrid.children];
+        const unchanged = cards.length === repositories.length && repositories.every((repository, index) => {
+            const card = cards[index];
+            const link = card.querySelector('h3 a');
+            return link.textContent === formatRepositoryName(repository.name)
+                && link.href === repository.html_url
+                && card.querySelector('.project-topline span').textContent === (repository.language || 'Project')
+                && card.querySelector('p').textContent === (repository.description || 'Open-source project on GitHub.');
+        });
+
+        if (!unchanged) {
+            projectGrid.replaceChildren(...repositories.map(createProjectCard));
+        }
         projectStatus.textContent = 'Updated from GitHub.';
     } catch {
         projectStatus.textContent = 'Showing selected projects.';

@@ -179,11 +179,11 @@ h1 {
 }
 
 .contact-icon--github {
-    --icon: url("icons/github.svg");
+    --icon: url("icons/github.svg?v=f57e58cdf666e10b");
 }
 
 .contact-icon--linkedin {
-    --icon: url("icons/linkedin.svg");
+    --icon: url("icons/linkedin.svg?v=e1c814e5fd45506e");
 }
 
 .projects {

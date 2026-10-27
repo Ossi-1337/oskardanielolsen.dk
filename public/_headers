@@ -1,3 +1,18 @@
 /*
   Content-Security-Policy: default-src 'self'; base-uri 'none'; connect-src 'self'; form-action 'none'; frame-ancestors 'none'; img-src 'self'; object-src 'none'; script-src 'self'; style-src 'self'
   Permissions-Policy: camera=(), geolocation=(), microphone=()
+
+/
+  Cache-Control: no-store
+
+/index.html
+  Cache-Control: no-store
+
+/index.css
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/index.js
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/icons/*
+  Cache-Control: public, max-age=86400, must-revalidate
