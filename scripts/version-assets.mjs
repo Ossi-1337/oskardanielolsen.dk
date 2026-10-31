@@ -11,16 +11,7 @@ function version(content) {
 
 export async function versionAssets(root = projectRoot, { check = false } = {}) {
     const assetPath = (name) => resolve(root, 'public', name);
-    const cssSource = await readFile(assetPath('index.css'), 'utf8');
-    let css = cssSource;
-
-    for (const icon of ['github', 'linkedin']) {
-        const iconVersion = version(await readFile(assetPath(`icons/${icon}.svg`), 'utf8'));
-        const iconPattern = new RegExp(`icons/${icon}\\.svg(?:\\?v=[a-f0-9]+)?`, 'g');
-        if (!iconPattern.test(css)) throw new Error(`Missing ${icon} icon reference in index.css`);
-        css = css.replace(iconPattern, `icons/${icon}.svg?v=${iconVersion}`);
-    }
-
+    const css = await readFile(assetPath('index.css'), 'utf8');
     const js = await readFile(assetPath('index.js'), 'utf8');
     const htmlSource = await readFile(assetPath('index.html'), 'utf8');
     const styleText = css.replace(/\r\n/g, '\n');
@@ -28,6 +19,14 @@ export async function versionAssets(root = projectRoot, { check = false } = {}) 
     const stylePattern = /<style id="site-styles">[\s\S]*?<\/style>|<link rel="stylesheet" href="index\.css(?:\?v=[a-f0-9]+)?">/;
     if (!stylePattern.test(htmlSource)) throw new Error('Missing site stylesheet in index.html');
     let html = htmlSource.replace(stylePattern, () => `<style id="site-styles">${styleText}</style>`);
+    for (const icon of ['github', 'linkedin']) {
+        const svg = (await readFile(assetPath(`icons/${icon}.svg`), 'utf8')).replace(/\r\n/g, '\n').trim();
+        if (!/^<svg\b[^>]*>[\s\S]*<\/svg>$/.test(svg)) throw new Error(`Invalid ${icon} SVG source`);
+        const className = `contact-icon contact-icon--${icon}`;
+        const iconPattern = new RegExp(`<span class="${className}" aria-hidden="true"></span>|<svg class="${className}"[^>]*>[\\s\\S]*?</svg>`);
+        if (!iconPattern.test(html)) throw new Error(`Missing ${icon} icon in index.html`);
+        html = html.replace(iconPattern, () => svg.replace(/^<svg\b/, `<svg class="${className}" aria-hidden="true"`));
+    }
     const scriptPattern = /((?:src)="index\.js)(?:\?v=[a-f0-9]+)?(")/g;
     if (!scriptPattern.test(html)) throw new Error('Missing index.js reference in index.html');
     html = html.replace(scriptPattern, `$1?v=${version(js)}$2`);
@@ -38,7 +37,7 @@ export async function versionAssets(root = projectRoot, { check = false } = {}) 
     if (!stylePolicy.test(headersSource)) throw new Error('Missing style-src policy in _headers');
     const headers = headersSource.replace(stylePolicy, () => `style-src 'self' 'sha256-${styleHash}'`);
 
-    const changed = [['index.css', cssSource, css], ['index.html', htmlSource, html], ['_headers', headersSource, headers]]
+    const changed = [['index.html', htmlSource, html], ['_headers', headersSource, headers]]
         .filter(([, before, after]) => before.replace(/\r\n/g, '\n') !== after.replace(/\r\n/g, '\n'));
     if (check && changed.length) throw new Error('Asset versions are stale. Run node scripts/version-assets.mjs.');
     for (const [name, , content] of changed) await writeFile(assetPath(name), content);

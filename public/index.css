@@ -173,17 +173,7 @@ h1 {
     width: 0.95rem;
     height: 0.95rem;
     flex: none;
-    background: currentColor;
-    -webkit-mask: var(--icon) center / contain no-repeat;
-    mask: var(--icon) center / contain no-repeat;
-}
-
-.contact-icon--github {
-    --icon: url("icons/github.svg?v=f57e58cdf666e10b");
-}
-
-.contact-icon--linkedin {
-    --icon: url("icons/linkedin.svg?v=e1c814e5fd45506e");
+    fill: currentColor;
 }
 
 .projects {

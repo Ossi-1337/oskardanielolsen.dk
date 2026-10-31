@@ -8,11 +8,12 @@ The site uses plain HTML, CSS, and JavaScript with no runtime dependencies.
 ## Styles and asset versions
 
 Cloudflare runs `node scripts/version-assets.mjs` automatically for production
-and preview deployments. It embeds `public/index.css` into the page, updates that exact stylesheet's
-SHA-256 CSP allowance in `public/_headers`, and versions JavaScript and icon URLs
-(`?v=…`). CSS stays editable in its own file; visitors do not need a separate
-stylesheet request. Run `node scripts/version-assets.mjs --check` to verify that
-the embedded styles, CSP hash, and asset versions are current. For local previews,
+and preview deployments. It embeds `public/index.css` and the contact SVGs from
+`public/icons/` into the page, updates that exact stylesheet's SHA-256 CSP
+allowance in `public/_headers`, and versions the JavaScript URL (`?v=…`). CSS
+and SVGs stay editable in their own files; visitors need no separate stylesheet
+or contact-icon requests. Run `node scripts/version-assets.mjs --check` to verify
+that the embedded styles/icons, CSP hash, and asset versions are current. For local previews,
 run the script after editing source assets; deployment builds regenerate these
 files automatically, so manually running it is not required before deploying.
 
@@ -21,8 +22,8 @@ the repository root as the working directory and `public` as the build output
 directory. This generates styles, CSP hashes, and asset versions on every
 Git-integrated deployment without installing dependencies.
 
-HTML is not cached, so each response receives a fresh CSP nonce. JavaScript
-and versioned contact icons can stay in the browser cache for one day. A normal
+HTML is not cached, so each response receives a fresh CSP nonce and current
+embedded styles/icons. JavaScript can stay in the browser cache for one day. A normal
 visit or reload picks up deployed updates without a hard refresh; an already
 open page does not update itself.
 
@@ -72,9 +73,29 @@ first/largest paint changed from 492 ms to 308 ms on cold loads. Warm loads were
 similar (212 ms versus 216 ms), with zero layout shift in both versions. These
 are controlled lab results, not measured production speed gains.
 
-The tradeoff is about 1.7 KiB more Brotli-compressed HTML on each visit instead
+The stylesheet tradeoff is about 1.7 KiB more Brotli-compressed HTML on each visit instead
 of a separately cached stylesheet. The cold HTML-plus-CSS payload shrank from
 about 3.0 KiB to 2.9 KiB before response headers. The layout is unchanged.
+
+The two contact icons are embedded from their existing SVG source paths and
+use `currentColor`, removing two more requests without extra CSP allowances.
+Compared with external icons, this adds about 0.5 KiB to repeat-visit HTML while
+reducing cold HTML-plus-icon bodies from 3,552 to 3,364 Brotli bytes, before
+headers. In a five-run local comparison with applied mobile throttling, icons
+were available with first paint instead of waiting for separate responses;
+text LCP and warm-load timing were effectively unchanged.
+
+For live audits, use Lighthouse's `--throttling-method=devtools --save-assets`
+options to apply network and CPU throttling during loading and retain the trace.
+Compare medians from at least three runs with the same browser, Lighthouse
+version, and settings. Keep CSP and Cloudflare protection enabled.
+
+Lighthouse's default [simulated timings](https://github.com/GoogleChrome/lighthouse/blob/main/docs/throttling.md)
+are estimates; distinguish them from observed trace timings. In the 2026-10-31
+Lighthouse 13.5.0 comparison, the model assigned a new connection to a reused
+Cloudflare HTTP/3 request, inflating estimated LCP by about 300 ms. The recorded
+paint did not regress. Do not compare simulated and applied-throttling results
+as equivalent measurements.
 
 ## Verification
 
