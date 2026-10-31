@@ -14,7 +14,7 @@ export async function onRequest(context) {
     const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32))));
     const secured = new Response(response.body, response);
     // Cloudflare copies this response nonce onto its injected JavaScript Detections scripts.
-    secured.headers.set('Content-Security-Policy', [
+    const basePolicy = response.headers.get('Content-Security-Policy') ?? [
         "default-src 'self'",
         "base-uri 'none'",
         "connect-src 'self'",
@@ -22,9 +22,13 @@ export async function onRequest(context) {
         "frame-ancestors 'none'",
         "img-src 'self'",
         "object-src 'none'",
-        `script-src 'self' 'nonce-${nonce}'`,
+        "script-src 'self'",
         "style-src 'self'",
-    ].join('; '));
+    ].join('; ');
+    secured.headers.set('Content-Security-Policy', basePolicy.replace(
+        /(^|;\s*)script-src\s+[^;]+/,
+        (directive) => `${directive} 'nonce-${nonce}'`
+    ));
     secured.headers.set('Permissions-Policy', 'camera=(), geolocation=(), microphone=()');
     for (const name of ['Cache-Control', 'CDN-Cache-Control', 'Cloudflare-CDN-Cache-Control']) {
         secured.headers.set(name, 'no-store');

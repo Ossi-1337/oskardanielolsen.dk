@@ -23,15 +23,23 @@ export async function versionAssets(root = projectRoot, { check = false } = {}) 
 
     const js = await readFile(assetPath('index.js'), 'utf8');
     const htmlSource = await readFile(assetPath('index.html'), 'utf8');
-    let html = htmlSource;
-    for (const [asset, content] of [['css', css], ['js', js]]) {
-        const pattern = new RegExp(`((?:href|src)="index\\.${asset})(?:\\?v=[a-f0-9]+)?(")`, 'g');
-        if (!pattern.test(html)) throw new Error(`Missing index.${asset} reference in index.html`);
-        html = html.replace(pattern, `$1?v=${version(content)}$2`);
-    }
+    const styleText = css.replace(/\r\n/g, '\n');
+    if (/<\/style/i.test(styleText)) throw new Error('Stylesheet contains an HTML style closing tag.');
+    const stylePattern = /<style id="site-styles">[\s\S]*?<\/style>|<link rel="stylesheet" href="index\.css(?:\?v=[a-f0-9]+)?">/;
+    if (!stylePattern.test(htmlSource)) throw new Error('Missing site stylesheet in index.html');
+    let html = htmlSource.replace(stylePattern, () => `<style id="site-styles">${styleText}</style>`);
+    const scriptPattern = /((?:src)="index\.js)(?:\?v=[a-f0-9]+)?(")/g;
+    if (!scriptPattern.test(html)) throw new Error('Missing index.js reference in index.html');
+    html = html.replace(scriptPattern, `$1?v=${version(js)}$2`);
 
-    const changed = [['index.css', cssSource, css], ['index.html', htmlSource, html]]
-        .filter(([, before, after]) => before !== after);
+    const headersSource = await readFile(assetPath('_headers'), 'utf8');
+    const styleHash = createHash('sha256').update(styleText).digest('base64');
+    const stylePolicy = /style-src 'self'(?: 'sha256-[A-Za-z0-9+/]+=*')*/g;
+    if (!stylePolicy.test(headersSource)) throw new Error('Missing style-src policy in _headers');
+    const headers = headersSource.replace(stylePolicy, () => `style-src 'self' 'sha256-${styleHash}'`);
+
+    const changed = [['index.css', cssSource, css], ['index.html', htmlSource, html], ['_headers', headersSource, headers]]
+        .filter(([, before, after]) => before.replace(/\r\n/g, '\n') !== after.replace(/\r\n/g, '\n'));
     if (check && changed.length) throw new Error('Asset versions are stale. Run node scripts/version-assets.mjs.');
     for (const [name, , content] of changed) await writeFile(assetPath(name), content);
     return changed.map(([name]) => name);
